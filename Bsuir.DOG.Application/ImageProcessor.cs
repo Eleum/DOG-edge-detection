@@ -11,7 +11,7 @@ namespace Bsuir.DOG.Application
 {
     public static class ImageProcessor
     {
-        public static Bitmap ConvolutionFilter(Bitmap source, double[,] filter, double factor = 1, int bias = 0, bool isGrayscale = false)
+        private static Bitmap ConvolutionFilter(Bitmap source, double[,] filter, double factor = 1, int bias = 0, bool convertToGrayscale = false)
         {
             BitmapData sourceData = source.LockBits(
                 new Rectangle(0, 0, source.Width, source.Height), 
@@ -25,7 +25,7 @@ namespace Bsuir.DOG.Application
             Marshal.Copy(sourceData.Scan0, pixelBuffer, 0, pixelBuffer.Length);
             source.UnlockBits(sourceData);
 
-            if (isGrayscale == true)
+            if (convertToGrayscale == true)
             {
                 for (int k = 0; k < pixelBuffer.Length; k += 4)
                 {
@@ -94,7 +94,7 @@ namespace Bsuir.DOG.Application
             return result;
         }
 
-        public static Bitmap SubtractImages(Bitmap source, Bitmap value, bool invert = false, int bias = 0)
+        private static Bitmap SubtractImages(Bitmap source, Bitmap value, bool invert = false, int bias = 0)
         {
             BitmapData sourceData = source.LockBits(
                 new Rectangle(0, 0, source.Width, source.Height),
@@ -152,7 +152,7 @@ namespace Bsuir.DOG.Application
             return source;
         }
 
-        public static Bitmap DifferenceOfGaussians(Bitmap source, MatrixType filterFirst, MatrixType filterSecond, bool grayscale = false, bool invert = false, int bias = 0)
+        public static Bitmap DifferenceOfGaussians(Bitmap source, MatrixType filterFirst, MatrixType filterSecond, int bias = 0, bool grayscale = false, bool invert = false)
         {
             Bitmap convolvedFirst = ConvolutionFilter(source, 
                 Matrix.GaussianInstance(filterFirst), 
